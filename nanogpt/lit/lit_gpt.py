@@ -3,7 +3,7 @@ import torch
 import lightning
 
 from nanogpt.config import ModelConf
-from nanogpt.nn.gpt import NanoGPT
+from nanogpt.models.gpt import NanoGPT
 
 class LitNanoGPT(lightning.LightningModule):
     def __init__(self, config: ModelConf, device: torch.device):

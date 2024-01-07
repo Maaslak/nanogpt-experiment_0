@@ -1,19 +1,23 @@
+import logging
+
 import hydra
+from omegaconf import DictConfig, OmegaConf
+from hydra.utils import instantiate
+from dataclasses import asdict
 
-from omegaconf import DictConfig
-from hydra.core.config_store import ConfigStore
 
-from nanogpt.config import ModelConf
+from nanogpt.config import PydanticModelConf
 
-cs = ConfigStore.instance()
-cs.store(name="base_config", node=ModelConf)
+logger = logging.getLogger(__name__)
 
 @hydra.main(
     version_base=None,
     config_path="conf",
     config_name="config"
 )
-def train(cfg: ModelConf) -> None:
+def train(cfg: DictConfig) -> None:
+    cfg = PydanticModelConf(OmegaConf.to_object(cfg))
+    logger.info("Config %s", cfg.model_dump_json())
     pass
 
 if __name__ == "__main__":
