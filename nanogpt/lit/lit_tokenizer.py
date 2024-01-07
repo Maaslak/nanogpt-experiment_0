@@ -1,9 +1,9 @@
 import lightning
 
-from nanogpt.config import ModelConf
+from nanogpt.config import Conf
 
 class Tokenizer(lightning.LightningModule):
-    def __init__(self, config: ModelConf):
+    def __init__(self, config: Conf):
         self.config = config
 
     

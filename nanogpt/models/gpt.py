@@ -29,27 +29,19 @@ class NanoGPT(nn.Module):
     super().__init__()
     self.embedding = nn.Embedding(vocab_size, embedding_dim) # C, E
     self.position_embedding = nn.Embedding(block_size, embedding_dim) # T, E
-    self.attention = nn.Sequential(
+    self.attention_blocks = nn.Sequential(
         *[Block(embedding_dim, n_heads)
         for _ in range(n_blocks)]
     )
     self.ff = FeadForward(embedding_dim)
     self.proj = nn.Linear(embedding_dim, vocab_size)
 
-  def forward(self, ids, targets=None):
+  def forward(self, ids):
     x = self.embedding(ids)
     B, T, E = x.shape
     x = x + self.position_embedding(torch.arange(T))
 
-    x = self.attention(x)
+    x = self.attention_blocks(x)
     x = self.ff(x)
     out = self.proj(x)
-
-    loss = None
-    if targets is not None:
-      # print(targets)
-      loss = torch.nn.functional.cross_entropy(
-          out.view(B * T, -1),
-          targets.reshape(B * T)
-      )
-    return out, loss
+    return out
